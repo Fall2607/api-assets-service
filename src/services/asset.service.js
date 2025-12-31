@@ -1,28 +1,41 @@
 import { pool } from "../db.js";
 
-export const create = async (data) => {
-  const { rows } = await pool.query(
-    `INSERT INTO assets
-     (name, category, brand, model, serial_number, location, department,
-      condition, status, purchase_date, warranty_expiry)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
-     RETURNING *`,
-    [
-      data.name,
-      data.category,
-      data.brand,
-      data.model,
-      data.serialNumber,
-      data.location,
-      data.department,
-      data.condition,
-      data.status,
-      data.purchaseDate,
-      data.warrantyExpiry,
-    ]
-  );
+export async function create(asset) {
+  const query = `
+    INSERT INTO assets (
+      name,
+      category,
+      brand,
+      model,
+      serial_number,
+      location,
+      department,
+      condition,
+      status,
+      purchase_date,
+      warranty_expiry
+    )
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+    RETURNING *
+  `;
+
+  const values = [
+    asset.name,
+    asset.category,
+    asset.brand || null,
+    asset.model || null,
+    asset.serialNumber,
+    asset.location || null,
+    asset.department || null,
+    asset.condition,
+    asset.status,
+    asset.purchaseDate || null,
+    asset.warrantyExpiry || null
+  ];
+
+  const { rows } = await pool.query(query, values);
   return rows[0];
-};
+}
 
 export const findAll = async () => {
   const { rows } = await pool.query(

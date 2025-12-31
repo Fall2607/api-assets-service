@@ -1,13 +1,16 @@
 import * as assetService from "../services/asset.service.js";
 
-export const createAsset = async (req, res) => {
+export async function createAsset(req, res) {
+  console.log("REQ BODY:", req.body);
+
   try {
     const asset = await assetService.create(req.body);
     res.status(201).json(asset);
   } catch (err) {
+    console.error("CREATE ASSET ERROR:", err.message);
     res.status(400).json({ message: err.message });
   }
-};
+}
 
 export const getAssets = async (req, res) => {
   const assets = await assetService.findAll();

@@ -4,16 +4,16 @@ import cors from "cors";
 
 import assetRoutes from "./routes/asset.routes.js";
 import maintenanceRoutes from "./routes/maintenance.routes.js";
+import unitRoutes from "./routes/unit.routes.js";
+import syncRoutes from "./routes/sync.routes.js";
 
 dotenv.config();
 
 const app = express();
 
-// ✅ MUST be before routes
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    origin: "http://192.168.1.72:5173",
+    origin: ["http://localhost:5173", "http://192.168.1.72:5173"],
   })
 );
 
@@ -21,6 +21,9 @@ app.use(express.json());
 
 app.use("/api/assets", assetRoutes);
 app.use("/api/maintenance", maintenanceRoutes);
+app.use("/api/units", unitRoutes);
+
+app.use("/internal", syncRoutes);
 
 app.get("/", (req, res) => {
   res.send("Asset Service API running");
